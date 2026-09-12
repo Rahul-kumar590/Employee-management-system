@@ -1,0 +1,389 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+class Employee
+{
+public:
+    int id;
+    string name;
+    int age;
+    string department;
+    string designation;
+    float salary;
+    string mobile;
+
+    void input()
+    {
+        cout << "\nEnter Employee ID: ";
+        cin >> id;
+
+        cin.ignore();
+
+        cout << "Enter Employee Name: ";
+        getline(cin, name);
+
+        cout << "Enter Age: ";
+        cin >> age;
+
+        cin.ignore();
+
+        cout << "Enter Department: ";
+        getline(cin, department);
+
+        cout << "Enter Designation: ";
+        getline(cin, designation);
+
+        cout << "Enter Salary: ";
+        cin >> salary;
+
+        cin.ignore();
+
+        cout << "Enter Mobile Number: ";
+        getline(cin, mobile);
+    }
+
+    void display()
+    {
+        cout << "\nEmployee ID   : " << id;
+        cout << "\nName          : " << name;
+        cout << "\nAge           : " << age;
+        cout << "\nDepartment    : " << department;
+        cout << "\nDesignation   : " << designation;
+        cout << "\nSalary        : " << salary;
+        cout << "\nMobile Number : " << mobile;
+        cout << "\n-----------------------------";
+    }
+};
+
+void addEmployee()
+{
+    Employee e;
+
+    e.input();
+
+    ofstream file("employee.txt", ios::app);
+
+    file << e.id << endl;
+    file << e.name << endl;
+    file << e.age << endl;
+    file << e.department << endl;
+    file << e.designation << endl;
+    file << e.salary << endl;
+    file << e.mobile << endl;
+
+    file.close();
+
+    cout << "\nEmployee added successfully!\n";
+}
+
+void displayEmployees()
+{
+    Employee e;
+
+    ifstream file("employee.txt");
+
+    if (!file)
+    {
+        cout << "\nNo employee record found!\n";
+        return;
+    }
+
+    while (file >> e.id)
+    {
+        file.ignore();
+        getline(file, e.name);
+
+        file >> e.age;
+        file.ignore();
+
+        getline(file, e.department);
+        getline(file, e.designation);
+
+        file >> e.salary;
+        file.ignore();
+
+        getline(file, e.mobile);
+
+        e.display();
+    }
+
+    file.close();
+}
+
+void searchEmployee()
+{
+    Employee e;
+    int searchId;
+    bool found = false;
+
+    cout << "\nEnter Employee ID to search: ";
+    cin >> searchId;
+
+    ifstream file("employee.txt");
+
+    while (file >> e.id)
+    {
+        file.ignore();
+        getline(file, e.name);
+
+        file >> e.age;
+        file.ignore();
+
+        getline(file, e.department);
+        getline(file, e.designation);
+
+        file >> e.salary;
+        file.ignore();
+
+        getline(file, e.mobile);
+
+        if (e.id == searchId)
+        {
+            cout << "\nEmployee Found!";
+            e.display();
+            found = true;
+            break;
+        }
+    }
+
+    file.close();
+
+    if (!found)
+    {
+        cout << "\nEmployee not found!\n";
+    }
+}
+
+void salaryDetails()
+{
+    Employee e;
+    int searchId;
+    bool found = false;
+
+    cout << "\nEnter Employee ID: ";
+    cin >> searchId;
+
+    ifstream file("employee.txt");
+
+    while (file >> e.id)
+    {
+        file.ignore();
+        getline(file, e.name);
+
+        file >> e.age;
+        file.ignore();
+
+        getline(file, e.department);
+        getline(file, e.designation);
+
+        file >> e.salary;
+        file.ignore();
+
+        getline(file, e.mobile);
+
+        if (e.id == searchId)
+        {
+            cout << "\n===== SALARY DETAILS =====";
+            cout << "\nEmployee ID : " << e.id;
+            cout << "\nName        : " << e.name;
+            cout << "\nBasic Salary: " << e.salary;
+
+            float bonus = e.salary * 0.10;
+            float totalSalary = e.salary + bonus;
+
+            cout << "\nBonus (10%) : " << bonus;
+            cout << "\nTotal Salary: " << totalSalary;
+
+            found = true;
+            break;
+        }
+    }
+
+    file.close();
+
+    if (!found)
+    {
+        cout << "\nEmployee not found!\n";
+    }
+}
+
+void updateEmployee()
+{
+    Employee e;
+    int updateId;
+    bool found = false;
+
+    cout << "\nEnter Employee ID to update: ";
+    cin >> updateId;
+
+    ifstream file("employee.txt");
+    ofstream temp("temp.txt");
+
+    while (file >> e.id)
+    {
+        file.ignore();
+        getline(file, e.name);
+
+        file >> e.age;
+        file.ignore();
+
+        getline(file, e.department);
+        getline(file, e.designation);
+
+        file >> e.salary;
+        file.ignore();
+
+        getline(file, e.mobile);
+
+        if (e.id == updateId)
+        {
+            cout << "\nEnter New Details\n";
+            e.input();
+            found = true;
+        }
+
+        temp << e.id << endl;
+        temp << e.name << endl;
+        temp << e.age << endl;
+        temp << e.department << endl;
+        temp << e.designation << endl;
+        temp << e.salary << endl;
+        temp << e.mobile << endl;
+    }
+
+    file.close();
+    temp.close();
+
+    remove("employee.txt");
+    rename("temp.txt", "employee.txt");
+
+    if (found)
+    {
+        cout << "\nEmployee updated successfully!\n";
+    }
+    else
+    {
+        cout << "\nEmployee not found!\n";
+    }
+}
+
+void deleteEmployee()
+{
+    Employee e;
+    int deleteId;
+    bool found = false;
+
+    cout << "\nEnter Employee ID to delete: ";
+    cin >> deleteId;
+
+    ifstream file("employee.txt");
+    ofstream temp("temp.txt");
+
+    while (file >> e.id)
+    {
+        file.ignore();
+        getline(file, e.name);
+
+        file >> e.age;
+        file.ignore();
+
+        getline(file, e.department);
+        getline(file, e.designation);
+
+        file >> e.salary;
+        file.ignore();
+
+        getline(file, e.mobile);
+
+        if (e.id == deleteId)
+        {
+            found = true;
+            continue;
+        }
+
+        temp << e.id << endl;
+        temp << e.name << endl;
+        temp << e.age << endl;
+        temp << e.department << endl;
+        temp << e.designation << endl;
+        temp << e.salary << endl;
+        temp << e.mobile << endl;
+    }
+
+    file.close();
+    temp.close();
+
+    remove("employee.txt");
+    rename("temp.txt", "employee.txt");
+
+    if (found)
+    {
+        cout << "\nEmployee deleted successfully!\n";
+    }
+    else
+    {
+        cout << "\nEmployee not found!\n";
+    }
+}
+
+int main()
+{
+    int choice;
+
+    do
+    {
+        cout << "\n\n====================================";
+        cout << "\n     EMPLOYEE MANAGEMENT SYSTEM";
+        cout << "\n====================================";
+        cout << "\n1. Add Employee";
+        cout << "\n2. Display All Employees";
+        cout << "\n3. Search Employee";
+        cout << "\n4. Salary Details";
+        cout << "\n5. Update Employee";
+        cout << "\n6. Delete Employee";
+        cout << "\n7. Exit";
+        cout << "\n====================================";
+
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            addEmployee();
+            break;
+
+        case 2:
+            displayEmployees();
+            break;
+
+        case 3:
+            searchEmployee();
+            break;
+
+        case 4:
+            salaryDetails();
+            break;
+
+        case 5:
+            updateEmployee();
+            break;
+
+        case 6:
+            deleteEmployee();
+            break;
+
+        case 7:
+            cout << "\nThank you for using the system!";
+            break;
+
+        default:
+            cout << "\nInvalid choice!";
+        }
+
+    } while (choice != 7);
+
+    return 0;
+}
